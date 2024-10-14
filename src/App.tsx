@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable max-len */
 import React, { useEffect, useMemo, useState } from 'react';
 import 'bulma/css/bulma.css';
@@ -55,10 +56,14 @@ export const App: React.FC = () => {
     setQuery('');
   };
 
+  const handleTodoReset = (value: Todo | null) => {
+    setSelectedTodo(value);
+  };
+
   useEffect(() => {
     getTodos()
       .then(setTodos)
-      .catch(() => alert('Error while getting todos!'))
+      .catch(() => console.error('Error while getting todos!'))
       .finally(() => setIsTodosLoaded(true));
   }, []);
 
@@ -86,8 +91,8 @@ export const App: React.FC = () => {
             <div className="block">
               {isTodosLoaded ? (
                 <TodoList
-                  onSelectedTodo={setSelectedTodo}
-                  onSelectedUserId={setSelectedUserId}
+                  onTodoSelect={setSelectedTodo}
+                  onUserIdSelect={setSelectedUserId}
                   selectedTodo={selectedTodo}
                   todos={filteredTodos}
                 />
@@ -101,7 +106,7 @@ export const App: React.FC = () => {
 
       {selectedTodo && (
         <TodoModal
-          onTodoSelect={setSelectedTodo}
+          handleTodoReset={handleTodoReset}
           selectedTodo={selectedTodo}
           selectedUserId={selectedUserId}
         />

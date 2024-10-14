@@ -4,16 +4,16 @@ import cn from 'classnames';
 
 interface Props {
   todos: Todo[];
-  onSelectedTodo: Dispatch<React.SetStateAction<Todo | null>>;
+  onTodoSelect: Dispatch<React.SetStateAction<Todo | null>>;
   selectedTodo: Todo | null;
-  onSelectedUserId: Dispatch<React.SetStateAction<number>>;
+  onUserIdSelect: Dispatch<React.SetStateAction<number>>;
 }
 
 export const TodoList: React.FC<Props> = ({
   todos,
-  onSelectedTodo,
+  onTodoSelect,
   selectedTodo,
-  onSelectedUserId,
+  onUserIdSelect,
 }) => (
   <table className="table is-narrow is-fullwidth">
     <thead>
@@ -62,8 +62,8 @@ export const TodoList: React.FC<Props> = ({
           <td className="has-text-right is-vcentered">
             <button
               onClick={() => {
-                onSelectedTodo(todo);
-                onSelectedUserId(todo.userId);
+                onTodoSelect(todo);
+                onUserIdSelect(todo.userId);
               }}
               data-cy="selectButton"
               className="button"

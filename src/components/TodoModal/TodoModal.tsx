@@ -1,11 +1,13 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+/* eslint-disable no-console */
+import React, { useEffect, useState } from 'react';
 import { Loader } from '../Loader';
 import { getUser } from '../../api';
 import { User } from '../../types/User';
 import { Todo } from '../../types/Todo';
+import cn from 'classnames';
 
 type Props = {
-  onTodoSelect: Dispatch<SetStateAction<Todo | null>>;
+  handleTodoReset: (value: Todo | null) => void;
   selectedUserId: number;
   selectedTodo: Todo | null;
 };
@@ -18,7 +20,7 @@ const defaultUser: User = {
 };
 
 export const TodoModal: React.FC<Props> = ({
-  onTodoSelect,
+  handleTodoReset,
   selectedUserId,
   selectedTodo,
 }) => {
@@ -27,7 +29,7 @@ export const TodoModal: React.FC<Props> = ({
   useEffect(() => {
     getUser(selectedUserId)
       .then(setUser)
-      .catch(() => alert('Error while trying to load user!'));
+      .catch(() => console.error('Error while trying to load user!'));
   }, [selectedUserId]);
 
   const isLoaded = selectedTodo && user !== defaultUser;
@@ -50,7 +52,7 @@ export const TodoModal: React.FC<Props> = ({
 
             {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             <button
-              onClick={() => onTodoSelect(null)}
+              onClick={() => handleTodoReset(null)}
               type="button"
               className="delete"
               data-cy="modal-close"
@@ -63,11 +65,14 @@ export const TodoModal: React.FC<Props> = ({
             </p>
 
             <p className="block" data-cy="modal-user">
-              {selectedTodo.completed ? (
-                <strong className="has-text-success">Done</strong>
-              ) : (
-                <strong className="has-text-danger">Planned</strong>
-              )}
+              <strong
+                className={cn({
+                  'has-text-success': selectedTodo.completed,
+                  'has-text-danger': !selectedTodo.completed,
+                })}
+              >
+                {selectedTodo.completed ? `Done` : `Planned`}
+              </strong>
 
               {' by '}
 
