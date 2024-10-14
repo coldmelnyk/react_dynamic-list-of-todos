@@ -7,7 +7,7 @@ import { TodoList } from './components/TodoList';
 import { TodoFilter } from './components/TodoFilter';
 import { Todo } from './types/Todo';
 import { getTodos } from './api';
-// import { TodoModal } from './components/TodoModal';
+import { TodoModal } from './components/TodoModal';
 import { Loader } from './components/Loader';
 
 export enum Filter {
@@ -52,6 +52,9 @@ export const App: React.FC = () => {
   const [filterType, setFilterType] = useState<Filter>(Filter.All);
   const [query, setQuery] = useState('');
 
+  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number>(0);
+
   const handleResetQuery = () => {
     setQuery('');
   };
@@ -83,13 +86,28 @@ export const App: React.FC = () => {
             </div>
 
             <div className="block">
-              {isTodosLoaded ? <TodoList todos={filteredTodos} /> : <Loader />}
+              {isTodosLoaded ? (
+                <TodoList
+                  onSelectedTodo={setSelectedTodo}
+                  onSelectedUserId={setSelectedUserId}
+                  selectedTodo={selectedTodo}
+                  todos={filteredTodos}
+                />
+              ) : (
+                <Loader />
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* <TodoModal /> */}
+      {selectedTodo && (
+        <TodoModal
+          onSelectedTodo={setSelectedTodo}
+          selectedTodo={selectedTodo}
+          selectedUserId={selectedUserId}
+        />
+      )}
     </>
   );
 };

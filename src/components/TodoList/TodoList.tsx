@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { Todo } from '../../types/Todo';
 import cn from 'classnames';
 
 interface Props {
   todos: Todo[];
+  onSelectedTodo: Dispatch<React.SetStateAction<Todo | null>>;
+  selectedTodo: Todo | null;
+  onSelectedUserId: Dispatch<React.SetStateAction<number>>;
 }
 
-export const TodoList: React.FC<Props> = ({ todos }) => (
+export const TodoList: React.FC<Props> = ({
+  todos,
+  onSelectedTodo,
+  selectedTodo,
+  onSelectedUserId,
+}) => (
   <table className="table is-narrow is-fullwidth">
     <thead>
       <tr>
@@ -22,10 +30,15 @@ export const TodoList: React.FC<Props> = ({ todos }) => (
     </thead>
 
     <tbody>
-      {/* className="has-background-info-light" */}
-      {/* <i className="far fa-eye-slash" /> */}
       {todos.map(todo => (
-        <tr key={todo.id} data-cy="todo" className="">
+        <tr
+          key={todo.id}
+          data-cy="todo"
+          className={cn({
+            'has-background-info-light':
+              selectedTodo !== null && selectedTodo.id === todo.id,
+          })}
+        >
           <td className="is-vcentered">{todo.id}</td>
           {todo.completed ? (
             <td className="is-vcentered">
@@ -47,9 +60,23 @@ export const TodoList: React.FC<Props> = ({ todos }) => (
             </p>
           </td>
           <td className="has-text-right is-vcentered">
-            <button data-cy="selectButton" className="button" type="button">
+            <button
+              onClick={() => {
+                onSelectedTodo(todo);
+                onSelectedUserId(todo.userId);
+              }}
+              data-cy="selectButton"
+              className="button"
+              type="button"
+            >
               <span className="icon">
-                <i className="far fa-eye" />
+                <i
+                  className={cn({
+                    'far fa-eye': selectedTodo === null,
+                    'far fa-eye-slash':
+                      selectedTodo !== null && selectedTodo.id === todo.id,
+                  })}
+                />
               </span>
             </button>
           </td>
