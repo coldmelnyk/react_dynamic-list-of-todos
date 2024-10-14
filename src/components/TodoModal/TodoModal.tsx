@@ -5,23 +5,32 @@ import { User } from '../../types/User';
 import { Todo } from '../../types/Todo';
 
 type Props = {
-  onSelectedTodo: Dispatch<SetStateAction<Todo | null>>;
+  onTodoSelect: Dispatch<SetStateAction<Todo | null>>;
   selectedUserId: number;
   selectedTodo: Todo | null;
 };
 
+const defaultUser: User = {
+  id: 0,
+  name: 'Default Username',
+  email: 'Default Email',
+  phone: 'Default Phonenumber',
+};
+
 export const TodoModal: React.FC<Props> = ({
-  onSelectedTodo,
+  onTodoSelect,
   selectedUserId,
   selectedTodo,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>(defaultUser);
 
   useEffect(() => {
-    getUser(selectedUserId).then(setUser);
+    getUser(selectedUserId)
+      .then(setUser)
+      .catch(() => alert('Error while trying to load user!'));
   }, [selectedUserId]);
 
-  const isLoaded = selectedTodo && user;
+  const isLoaded = selectedTodo && user !== defaultUser;
 
   return (
     <div className="modal is-active" data-cy="modal">
@@ -41,7 +50,7 @@ export const TodoModal: React.FC<Props> = ({
 
             {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             <button
-              onClick={() => onSelectedTodo(null)}
+              onClick={() => onTodoSelect(null)}
               type="button"
               className="delete"
               data-cy="modal-close"

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 
@@ -21,10 +21,6 @@ function filteringTodos(
   settings: { filterType: Filter; query: string },
 ) {
   let arrayCopy = [...array];
-
-  if (settings.filterType === Filter.All) {
-    arrayCopy = [...array];
-  }
 
   if (settings.filterType === Filter.Active) {
     arrayCopy = arrayCopy.filter(element => element.completed === false);
@@ -62,11 +58,13 @@ export const App: React.FC = () => {
   useEffect(() => {
     getTodos()
       .then(setTodos)
-      .catch(() => alert('Something went wrong, sir!!!'))
+      .catch(() => alert('Error while getting todos!'))
       .finally(() => setIsTodosLoaded(true));
   }, []);
 
-  const filteredTodos = filteringTodos(todos, { filterType, query });
+  const filteredTodos: Todo[] = useMemo(() => {
+    return filteringTodos(todos, { filterType, query });
+  }, [todos, filterType, query]);
 
   return (
     <>
@@ -103,7 +101,7 @@ export const App: React.FC = () => {
 
       {selectedTodo && (
         <TodoModal
-          onSelectedTodo={setSelectedTodo}
+          onTodoSelect={setSelectedTodo}
           selectedTodo={selectedTodo}
           selectedUserId={selectedUserId}
         />
