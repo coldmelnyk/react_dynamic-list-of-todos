@@ -13,7 +13,7 @@ import { Loader } from './components/Loader';
 export enum Filter {
   All = 'all',
   Active = 'active',
-  Completed = 'complited',
+  Completed = 'completed',
 }
 
 function filteringTodos(
