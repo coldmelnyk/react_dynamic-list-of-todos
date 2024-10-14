@@ -19,7 +19,7 @@ export const TodoModal: React.FC<Props> = ({
 
   useEffect(() => {
     getUser(selectedUserId).then(setUser);
-  }, []);
+  }, [selectedUserId]);
 
   const isLoaded = selectedTodo && user;
 
